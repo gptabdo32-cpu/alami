@@ -316,3 +316,6 @@ func _animate_press(btn: Button) -> void:
     var tween = create_tween()
     tween.tween_property(btn, "scale", Vector2.ONE * pressed_scale, 0.05)
     tween.tween_property(btn, "scale", Vector2.ONE, 0.1)
+
+func _on_settings_changed() -> void:
+    _apply_settings()
