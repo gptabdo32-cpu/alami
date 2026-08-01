@@ -73,7 +73,7 @@ func _setup_visuals() -> void:
     var button_style = StyleBoxFlat.new()
     button_style.set_corner_radius_all(100) # Circular buttons
     button_style.bg_color = Color(1, 1, 1, 0.15)
-    button_style.border_width_all = 2
+    button_style.set_border_width_all(2)
     button_style.border_color = Color(1, 1, 1, 0.4)
     button_style.set_expand_margin_all(4)
     
@@ -93,14 +93,14 @@ func _setup_visuals() -> void:
     var base_style = StyleBoxFlat.new()
     base_style.set_corner_radius_all(1000)
     base_style.bg_color = Color(0, 0, 0, 0.2)
-    base_style.border_width_all = 3
+    base_style.set_border_width_all(3)
     base_style.border_color = Color(1, 1, 1, 0.2)
     move_base.add_theme_stylebox_override("panel", base_style)
     
     var knob_style = StyleBoxFlat.new()
     knob_style.set_corner_radius_all(1000)
     knob_style.bg_color = Color(1, 1, 1, 0.6)
-    knob_style.border_width_all = 2
+    knob_style.set_border_width_all(2)
     knob_style.border_color = Color(1, 1, 1, 0.8)
     knob_style.shadow_color = Color(0, 0, 0, 0.3)
     knob_style.shadow_size = 8
@@ -256,11 +256,13 @@ func _apply_safe_area() -> void:
     if rect.size.x > 0:
         var win_size = DisplayServer.window_get_size()
         var ui_scale = screen_size / Vector2(win_size)
+        safe_area.set_anchors_preset(Control.PRESET_TOP_LEFT)
         safe_area.position = Vector2(rect.position) * ui_scale
-        safe_area.size = Vector2(rect.size) * ui_scale
+        safe_area.set_deferred("size", Vector2(rect.size) * ui_scale)
     else:
+        safe_area.set_anchors_preset(Control.PRESET_FULL_RECT)
         safe_area.position = Vector2.ZERO
-        safe_area.size = screen_size
+        safe_area.set_deferred("size", screen_size)
 
 # Consumables for the player controller
 func consume_move_vector() -> Vector2: return move_vector
