@@ -33,16 +33,24 @@ func _ready() -> void:
 	if not load_registry():
 		reset_defaults(world_seed)
 
-func reset_defaults(p_seed: int = 424242) -> void:
-	world_seed = p_seed
-	region_size_chunks = 4
-	cell_size_meters = 500.0
-	region_overrides.clear()
-	cell_overrides.clear()
-	loaded_regions.clear()
-	loaded_cells.clear()
-	world_seed_changed.emit(world_seed)
-	registry_changed.emit()
+	func reset_defaults(p_seed: int = 424242) -> void:
+		world_seed = p_seed
+		region_size_chunks = 4
+		cell_size_meters = 500.0
+		region_overrides.clear()
+		cell_overrides.clear()
+		loaded_regions.clear()
+		loaded_cells.clear()
+		
+		# Professional City Integration: Set chunk (0,0) as a city
+		register_cell_override(Vector2i(0, 0), {
+			"theme": "city",
+			"flattening": 1.0,
+			"vegetation_density": 0.0
+		})
+		
+		world_seed_changed.emit(world_seed)
+		registry_changed.emit()
 
 func set_world_seed(p_seed: int) -> void:
 	if world_seed == p_seed:

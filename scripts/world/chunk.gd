@@ -49,7 +49,11 @@ func build_from_data(data: Dictionary, with_collision: bool) -> void:
 	terrain_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if lod_level == 0 else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(terrain_mesh_instance)
 
-	_build_props(data)
+	if data.get("theme") == "city":
+		_build_city()
+	else:
+		_build_props(data)
+	
 	set_collision_enabled(with_collision, data)
 	state = State.ACTIVE
 	activated.emit(coordinates)
@@ -93,6 +97,24 @@ func set_sleeping(value: bool) -> void:
 	state = State.SLEEPING if value else State.ACTIVE
 	visible = not value
 	process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+
+func _build_city() -> void:
+	if lod_level >= 2:
+		return
+	
+	var city_scene := AssetManager.instantiate_scene(&"city_model")
+	if city_scene == null:
+		return
+	
+	city_scene.name = "CityModel"
+	# Professional Adjustment: Center the city in the chunk and ensure it's on the ground
+	# We use a scale that fits the 256m chunk size reasonably.
+	city_scene.scale = Vector3.ONE * 1.0 
+	city_scene.position = Vector3(0, 1.6, 0)
+	add_child(city_scene)
+	
+	# If the city model has its own collision, we might want to disable terrain collision
+	# or ensure they don't fight. Since we flattened the terrain, it should be fine.
 
 func _build_props(data: Dictionary) -> void:
 	if lod_level >= 2:
