@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/world/world_manager.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/world/chunk.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/mobile_controls.tscn" id="7"]
+[ext_resource type="Script" path="res://scripts/world/water_manager.gd" id="8"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1")
+
+[node name="EnvironmentRoot" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="EnvironmentRoot"]
+rotation_degrees = Vector3(-45, -30, 0)
+light_energy = 2.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="EnvironmentRoot"]
+
+[node name="GameplayRoot" type="Node3D" parent="."]
+
+[node name="Player" parent="GameplayRoot" instance=ExtResource("2")]
+position = Vector3(0, 2, 0)
+
+[node name="WorldManager" type="Node3D" parent="GameplayRoot" groups=["world_manager", "world_streamer"]]
+script = ExtResource("3")
+chunk_scene = ExtResource("5")
+
+[node name="WaterManager" type="MeshInstance3D" parent="GameplayRoot"]
+script = ExtResource("8")
+
+[node name="UIRoot" type="Node" parent="."]
+
+[node name="HUD" parent="UIRoot" instance=ExtResource("4")]
+
+[node name="SettingsMenu" parent="UIRoot" instance=ExtResource("6")]
+
+[node name="MobileControls" parent="UIRoot" instance=ExtResource("7")]

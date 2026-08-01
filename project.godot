@@ -1,0 +1,36 @@
+config_version=5
+
+[application]
+config/name="Open World Foundation Pro - Stage 1"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+GameState="*res://scripts/core/game_state.gd"
+SettingsSystem="*res://scripts/core/settings_system.gd"
+EventBus="*res://scripts/core/event_bus.gd"
+TimeSystem="*res://scripts/core/time_system.gd"
+SaveSystem="*res://scripts/core/save_system.gd"
+WorldDataSystem="*res://scripts/core/world_data_system.gd"
+AssetManager="*res://scripts/core/asset_manager.gd"
+ObjectPool="*res://scripts/core/object_pool.gd"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[input]
+move_forward={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 87, "unicode": 119}]}
+move_backward={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 83, "unicode": 115}]}
+move_left={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 65, "unicode": 97}]}
+move_right={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 68, "unicode": 100}]}
+jump={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 32, "unicode": 32}]}
+sprint={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 4194325, "unicode": 0}]}
+interact={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 69, "unicode": 101}]}
+menu={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 16777217, "unicode": 0}]}
+save_game={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 4194330, "unicode": 0}]}
+load_game={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 4194331, "unicode": 0}]}
+crouch={"deadzone": 0.5, "events": [{"type": "InputEventKey", "physical_keycode": 67, "unicode": 99}]}
