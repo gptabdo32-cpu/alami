@@ -204,7 +204,7 @@ func _touch_hits_action_button(pos: Vector2) -> bool:
 
 func _apply_settings() -> void:
     var min_dim = minf(screen_size.x, screen_size.y)
-    var dpi_scale = screen_dpi / 160.0
+    var _dpi_scale = screen_dpi / 160.0
     
     joystick_radius = (min_dim * 0.12) * SettingsSystem.joystick_scale
     var pad_size = joystick_radius * 2.4
@@ -255,9 +255,9 @@ func _apply_safe_area() -> void:
     var rect = DisplayServer.get_display_safe_area()
     if rect.size.x > 0:
         var win_size = DisplayServer.window_get_size()
-        var scale = screen_size / Vector2(win_size)
-        safe_area.position = rect.position * scale
-        safe_area.size = rect.size * scale
+        var ui_scale = screen_size / Vector2(win_size)
+        safe_area.position = Vector2(rect.position) * ui_scale
+        safe_area.size = Vector2(rect.size) * ui_scale
     else:
         safe_area.position = Vector2.ZERO
         safe_area.size = screen_size

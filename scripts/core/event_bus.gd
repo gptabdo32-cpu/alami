@@ -9,4 +9,4 @@ signal settings_changed
 signal debug_message(message: String)
 
 func emit_debug(message: String) -> void:
-    emit_signal("debug_message", message)
+    debug_message.emit(message)

@@ -109,7 +109,7 @@ func save_game(slot: String = "01") -> bool:
         EventBus.emit_debug("Save failed: atomic write error.")
         return false
 
-    EventBus.emit_signal("game_saved", slot)
+    EventBus.game_saved.emit(slot)
     EventBus.emit_debug("Saved game slot: %s" % slot)
     return true
 
@@ -133,6 +133,6 @@ func load_game(slot: String = "01") -> bool:
     apply_save_data(parsed)
     GameState.save_slot = slot
 
-    EventBus.emit_signal("game_loaded", slot)
+    EventBus.game_loaded.emit(slot)
     EventBus.emit_debug("Loaded game slot: %s" % slot)
     return true

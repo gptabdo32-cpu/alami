@@ -25,7 +25,7 @@ var day_index: int = 1
 var world_seed: int = 424242
 var debug_enabled: bool = true
 
-func reset_defaults(seed: int = 424242) -> void:
+func reset_defaults(p_seed: int = 424242) -> void:
     version = APP_VERSION
     save_slot = "01"
     player_position = Vector3(0.0, 12.0, 0.0)
@@ -36,16 +36,16 @@ func reset_defaults(seed: int = 424242) -> void:
     current_chunk_z = 0
     time_of_day_minutes = 8.0 * 60.0
     day_index = 1
-    world_seed = seed
+    world_seed = p_seed
     debug_enabled = true
     _emit_state_changed()
 
-func set_player_state(position: Vector3, rotation_y: float, pitch: float) -> void:
-    set_player_state_silent(position, rotation_y, pitch)
+func set_player_state(p_position: Vector3, rotation_y: float, pitch: float) -> void:
+    set_player_state_silent(p_position, rotation_y, pitch)
     _emit_state_changed()
 
-func set_player_state_silent(position: Vector3, rotation_y: float, pitch: float) -> void:
-    player_position = position
+func set_player_state_silent(p_position: Vector3, rotation_y: float, pitch: float) -> void:
+    player_position = p_position
     player_rotation_y = rotation_y
     camera_pitch = pitch
 
@@ -63,8 +63,8 @@ func set_time_minutes(minutes: float, day: int, notify: bool = false) -> void:
 func set_time_hours(hours: float, day: int) -> void:
     set_time_minutes(hours * 60.0, day)
 
-func set_world_seed(seed: int) -> void:
-    world_seed = seed
+func set_world_seed(p_seed: int) -> void:
+    world_seed = p_seed
     _emit_state_changed()
 
 func set_debug_enabled(enabled: bool) -> void:

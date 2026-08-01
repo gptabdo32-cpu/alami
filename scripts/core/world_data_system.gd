@@ -33,8 +33,8 @@ func _ready() -> void:
 	if not load_registry():
 		reset_defaults(world_seed)
 
-func reset_defaults(seed: int = 424242) -> void:
-	world_seed = seed
+func reset_defaults(p_seed: int = 424242) -> void:
+	world_seed = p_seed
 	region_size_chunks = 4
 	cell_size_meters = 500.0
 	region_overrides.clear()
@@ -44,10 +44,10 @@ func reset_defaults(seed: int = 424242) -> void:
 	world_seed_changed.emit(world_seed)
 	registry_changed.emit()
 
-func set_world_seed(seed: int) -> void:
-	if world_seed == seed:
+func set_world_seed(p_seed: int) -> void:
+	if world_seed == p_seed:
 		return
-	world_seed = seed
+	world_seed = p_seed
 	world_seed_changed.emit(world_seed)
 	registry_changed.emit()
 

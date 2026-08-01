@@ -36,7 +36,7 @@ func _ready() -> void:
 	if chunk_scene == null:
 		chunk_scene = AssetManager.get_scene(&"world_chunk")
 	if chunk_scene != null:
-		ObjectPool.register_scene_pool(&"world_chunk", chunk_scene, maxi(2, int(max_cached_chunks / 2)), max_cached_chunks, self)
+		ObjectPool.register_scene_pool(&"world_chunk", chunk_scene, maxi(2, int(max_cached_chunks / 2.0)), max_cached_chunks, self)
 	if not EventBus.settings_changed.is_connected(_on_settings_changed):
 		EventBus.settings_changed.connect(_on_settings_changed)
 	if not WorldDataSystem.registry_changed.is_connected(_on_world_registry_changed):
@@ -84,8 +84,8 @@ func sync_from_state() -> void:
 	clear_chunks()
 	_rebuild_wanted_set()
 
-func world_to_chunk(position: Vector3) -> Vector2i:
-	return Vector2i(floori((position.x + chunk_size * 0.5) / chunk_size), floori((position.z + chunk_size * 0.5) / chunk_size))
+func world_to_chunk(p_position: Vector3) -> Vector2i:
+	return Vector2i(floori((p_position.x + chunk_size * 0.5) / chunk_size), floori((p_position.z + chunk_size * 0.5) / chunk_size))
 
 func get_height_at(world_position: Vector3) -> float:
 	return ChunkDataGenerator.sample_world_height(world_position.x, world_position.z, world_seed)

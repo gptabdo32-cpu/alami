@@ -9,7 +9,7 @@ static func generate(config: Dictionary) -> Dictionary:
 	var chunk_z := int(config.get("chunk_z", 0))
 	var chunk_size := float(config.get("chunk_size", 256.0))
 	var resolution := maxi(4, int(config.get("resolution", 24)))
-	var seed := int(config.get("seed", 424242))
+	var map_seed := int(config.get("seed", 424242))
 	var height_scale := float(config.get("height_scale", 34.0))
 	var water_level := float(config.get("water_level", -1.5))
 	var vegetation_density := clampf(float(config.get("vegetation_density", 0.7)), 0.0, 1.0)
@@ -24,28 +24,28 @@ static func generate(config: Dictionary) -> Dictionary:
 		vegetation_density *= clampf(float(cell_dict.get("vegetation_density", 1.0)), 0.0, 1.5)
 
 	var continent := FastNoiseLite.new()
-	continent.seed = seed + 11
+	continent.seed = map_seed + 11
 	continent.frequency = 0.0015
 	var hills := FastNoiseLite.new()
-	hills.seed = seed + 23
+	hills.seed = map_seed + 23
 	hills.frequency = 0.0045
 	var detail := FastNoiseLite.new()
-	detail.seed = seed + 37
+	detail.seed = map_seed + 37
 	detail.frequency = 0.022
 	var ridge := FastNoiseLite.new()
-	ridge.seed = seed + 41
+	ridge.seed = map_seed + 41
 	ridge.frequency = 0.010
 	var moisture_noise := FastNoiseLite.new()
-	moisture_noise.seed = seed + 53
+	moisture_noise.seed = map_seed + 53
 	moisture_noise.frequency = 0.0025
 	var temperature_noise := FastNoiseLite.new()
-	temperature_noise.seed = seed + 67
+	temperature_noise.seed = map_seed + 67
 	temperature_noise.frequency = 0.0018
 	var plateau_noise := FastNoiseLite.new()
-	plateau_noise.seed = seed + 79
+	plateau_noise.seed = map_seed + 79
 	plateau_noise.frequency = 0.0032
 	var erosion_noise := FastNoiseLite.new()
-	erosion_noise.seed = seed + 89
+	erosion_noise.seed = map_seed + 89
 	erosion_noise.frequency = 0.0068
 
 	var side := resolution + 1
@@ -64,7 +64,7 @@ static func generate(config: Dictionary) -> Dictionary:
 			var lz := -half + float(z) * step
 			var wx := float(chunk_x) * chunk_size + lx
 			var wz := float(chunk_z) * chunk_size + lz
-			var h := _height(wx, wz, seed, height_scale, continent, hills, detail, ridge, plateau_noise, erosion_noise)
+			var h := _height(wx, wz, map_seed, height_scale, continent, hills, detail, ridge, plateau_noise, erosion_noise)
 			h = _apply_theme_height(h, theme, flattening)
 			heights[z * side + x] = h
 			min_height = minf(min_height, h)
@@ -121,8 +121,8 @@ static func generate(config: Dictionary) -> Dictionary:
 	var bush_transforms: Array[Transform3D] = []
 	if include_props:
 		var rng := RandomNumberGenerator.new()
-		rng.seed = seed ^ (chunk_x * 92821) ^ (chunk_z * 68917)
-		var density := _chunk_vegetation_factor(chunk_x, chunk_z, seed)
+		rng.seed = map_seed ^ (chunk_x * 92821) ^ (chunk_z * 68917)
+		var density := _chunk_vegetation_factor(chunk_x, chunk_z, map_seed)
 		var tree_count := roundi(rng.randi_range(10, 28) * vegetation_density * density)
 		var rock_count := roundi(rng.randi_range(4, 10) * vegetation_density * (0.85 + density * 0.35))
 		var bush_count := roundi(rng.randi_range(8, 22) * vegetation_density * (1.0 + density * 0.25))
@@ -147,16 +147,16 @@ static func generate(config: Dictionary) -> Dictionary:
 		"bush_transforms": bush_transforms
 	}
 
-static func sample_world_height(world_x: float, world_z: float, seed: int = 424242, height_scale: float = 34.0) -> float:
-	var continent := FastNoiseLite.new(); continent.seed = seed + 11; continent.frequency = 0.0015
-	var hills := FastNoiseLite.new(); hills.seed = seed + 23; hills.frequency = 0.0045
-	var detail := FastNoiseLite.new(); detail.seed = seed + 37; detail.frequency = 0.022
-	var ridge := FastNoiseLite.new(); ridge.seed = seed + 41; ridge.frequency = 0.010
-	var plateau_noise := FastNoiseLite.new(); plateau_noise.seed = seed + 79; plateau_noise.frequency = 0.0032
-	var erosion_noise := FastNoiseLite.new(); erosion_noise.seed = seed + 89; erosion_noise.frequency = 0.0068
-	return _height(world_x, world_z, seed, height_scale, continent, hills, detail, ridge, plateau_noise, erosion_noise)
+static func sample_world_height(world_x: float, world_z: float, p_seed: int = 424242, height_scale: float = 34.0) -> float:
+	var continent := FastNoiseLite.new(); continent.seed = p_seed + 11; continent.frequency = 0.0015
+	var hills := FastNoiseLite.new(); hills.seed = p_seed + 23; hills.frequency = 0.0045
+	var detail := FastNoiseLite.new(); detail.seed = p_seed + 37; detail.frequency = 0.022
+	var ridge := FastNoiseLite.new(); ridge.seed = p_seed + 41; ridge.frequency = 0.010
+	var plateau_noise := FastNoiseLite.new(); plateau_noise.seed = p_seed + 79; plateau_noise.frequency = 0.0032
+	var erosion_noise := FastNoiseLite.new(); erosion_noise.seed = p_seed + 89; erosion_noise.frequency = 0.0068
+	return _height(world_x, world_z, p_seed, height_scale, continent, hills, detail, ridge, plateau_noise, erosion_noise)
 
-static func _height(wx: float, wz: float, seed: int, height_scale: float, continent: FastNoiseLite, hills: FastNoiseLite, detail: FastNoiseLite, ridge: FastNoiseLite, plateau_noise: FastNoiseLite, erosion_noise: FastNoiseLite) -> float:
+static func _height(wx: float, wz: float, p_seed: int, height_scale: float, continent: FastNoiseLite, hills: FastNoiseLite, detail: FastNoiseLite, ridge: FastNoiseLite, plateau_noise: FastNoiseLite, erosion_noise: FastNoiseLite) -> float:
 	var continental_base := continent.get_noise_2d(wx * 0.5, wz * 0.5) * 0.5 + 0.5
 	var continental := pow(clampf(continental_base, 0.0, 1.0), 1.68)
 	var hill_value := hills.get_noise_2d(wx, wz) * 0.85
@@ -164,7 +164,7 @@ static func _height(wx: float, wz: float, seed: int, height_scale: float, contin
 	var ridge_value := pow(absf(ridge.get_noise_2d(wx, wz)), 1.82) * 1.1
 	var plateau_value := pow(plateau_noise.get_noise_2d(wx * 0.68, wz * 0.68) * 0.5 + 0.5, 2.15) * 6.5
 	var erosion := pow(absf(erosion_noise.get_noise_2d(wx * 1.4, wz * 1.4)), 1.28) * 3.6
-	var river := _river_carve(wx, wz, seed)
+	var river := _river_carve(wx, wz, p_seed)
 	var base := (continental * 25.0) + (hill_value * 7.2) + (detail_value * 2.8) + (ridge_value * 15.0) + plateau_value - erosion - river - 7.5
 	return base * (height_scale / 34.0)
 
@@ -231,9 +231,9 @@ static func _biome_color(biome: int) -> Color:
 		_:
 			return Color(0.18, 0.58, 0.22)
 
-static func _chunk_vegetation_factor(chunk_x: int, chunk_z: int, seed: int) -> float:
-	var n := sin(float(chunk_x) * 0.73 + float(seed) * 0.0007) * 0.5 + 0.5
-	n *= cos(float(chunk_z) * 0.61 - float(seed) * 0.0004) * 0.5 + 0.5
+static func _chunk_vegetation_factor(chunk_x: int, chunk_z: int, p_seed: int) -> float:
+	var n := sin(float(chunk_x) * 0.73 + float(p_seed) * 0.0007) * 0.5 + 0.5
+	n *= cos(float(chunk_z) * 0.61 - float(p_seed) * 0.0004) * 0.5 + 0.5
 	return clampf(0.65 + n * 0.7, 0.55, 1.35)
 
 static func _prop_biome_weight(biome: int, kind: int) -> float:
@@ -361,9 +361,9 @@ static func _scatter_props(output: Array[Transform3D], count: int, rng: RandomNu
 			output.append(Transform3D(basis, Vector3(lx, height + y_offset, lz)))
 			break
 
-static func _river_carve(wx: float, wz: float, seed: int) -> float:
-	var meander := sin(wx * 0.0024 + float(seed) * 0.0001) * 110.0
-	meander += sin(wx * 0.0071 + float(seed) * 0.00023) * 18.0
+static func _river_carve(wx: float, wz: float, p_seed: int) -> float:
+	var meander := sin(wx * 0.0024 + float(p_seed) * 0.0001) * 110.0
+	meander += sin(wx * 0.0071 + float(p_seed) * 0.00023) * 18.0
 	meander += cos(wx * 0.0012) * 22.0
 	var distance := absf(wz - meander)
 	var normalized := clampf(1.0 - distance / 18.0, 0.0, 1.0)

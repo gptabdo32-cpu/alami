@@ -39,8 +39,8 @@ func _ready() -> void:
     if not EventBus.settings_changed.is_connected(_on_settings_changed):
         EventBus.settings_changed.connect(_on_settings_changed)
 
-func apply_persisted_state(position: Vector3, yaw: float, pitch: float) -> void:
-    global_position = position
+func apply_persisted_state(p_position: Vector3, yaw: float, pitch: float) -> void:
+    global_position = p_position
     rotation.y = yaw
     target_yaw = yaw
     camera_pitch = clampf(pitch, deg_to_rad(-75.0), deg_to_rad(75.0))
