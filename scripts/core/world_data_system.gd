@@ -33,24 +33,24 @@ func _ready() -> void:
 	if not load_registry():
 		reset_defaults(world_seed)
 
-	func reset_defaults(p_seed: int = 424242) -> void:
-		world_seed = p_seed
-		region_size_chunks = 4
-		cell_size_meters = 500.0
-		region_overrides.clear()
-		cell_overrides.clear()
-		loaded_regions.clear()
-		loaded_cells.clear()
-		
-		# Professional City Integration: Set chunk (0,0) as a city
-		register_cell_override(Vector2i(0, 0), {
-			"theme": "city",
-			"flattening": 1.0,
-			"vegetation_density": 0.0
-		})
-		
-		world_seed_changed.emit(world_seed)
-		registry_changed.emit()
+func reset_defaults(p_seed: int = 424242) -> void:
+	world_seed = p_seed
+	region_size_chunks = 4
+	cell_size_meters = 500.0
+	region_overrides.clear()
+	cell_overrides.clear()
+	loaded_regions.clear()
+	loaded_cells.clear()
+	
+	# Professional City Integration: Set chunk (0,0) as a city
+	register_cell_override(Vector2i(0, 0), {
+		"theme": "city",
+		"flattening": 1.0,
+		"vegetation_density": 0.0
+	})
+	
+	world_seed_changed.emit(world_seed)
+	registry_changed.emit()
 
 func set_world_seed(p_seed: int) -> void:
 	if world_seed == p_seed:
@@ -219,8 +219,8 @@ func get_cell_data(chunk: Vector2i) -> Dictionary:
 		var override_data: Dictionary = cell_overrides[key]
 		return _normalize_cell_record(chunk, override_data.duplicate(true))
 
-	var region := region_from_chunk(chunk)
-	var region_data := get_region_data(region)
+	var region: Vector2i = region_from_chunk(chunk)
+	var region_data: Dictionary = get_region_data(region)
 	var archetype := str(region_data.get("type", "plain"))
 	var local_noise := _cell_noise(chunk)
 
@@ -251,8 +251,8 @@ func get_cell_data(chunk: Vector2i) -> Dictionary:
 	return record
 
 func get_region_summary_for_chunk(chunk: Vector2i) -> Dictionary:
-	var region := region_from_chunk(chunk)
-	var region_data := get_region_data(region)
+	var region: Vector2i = region_from_chunk(chunk)
+	var region_data: Dictionary = get_region_data(region)
 	return {
 		"name": region_data.get("name", "Region"),
 		"type": region_data.get("type", "plain"),

@@ -102,7 +102,7 @@ func _build_city() -> void:
 	if lod_level >= 2:
 		return
 	
-	var city_scene := AssetManager.instantiate_scene(&"city_model")
+	var city_scene: Node = AssetManager.instantiate_scene(&"city_model")
 	if city_scene == null:
 		return
 	

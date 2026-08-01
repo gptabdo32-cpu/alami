@@ -4,10 +4,10 @@ signal scene_registered(key: StringName)
 signal material_registered(key: StringName)
 signal asset_cache_cleared
 
-	const DEFAULT_SCENE_PATHS := {
-		&"world_chunk": "res://scenes/world/chunk.tscn",
-		&"city_model": "res://assets/models/city/city_model.fbx"
-	}
+const DEFAULT_SCENE_PATHS := {
+	&"world_chunk": "res://scenes/world/chunk.tscn",
+	&"city_model": "res://assets/models/city/city_model.fbx"
+}
 
 var scene_cache: Dictionary = {}
 var material_cache: Dictionary = {}

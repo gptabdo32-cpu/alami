@@ -168,7 +168,7 @@ func _start_next_generation() -> void:
 		return
 
 	var lod := _lod_for(c)
-	var cell_data := WorldDataSystem.get_cell_data(c)
+	var cell_data: Dictionary = WorldDataSystem.get_cell_data(c)
 	running_job_key = key
 	running_job_config = {
 		"chunk_x": c.x,
@@ -252,7 +252,7 @@ func _unload_far_chunks() -> void:
 		active_chunks.erase(key)
 		chunk.set_collision_enabled(false)
 		WorldDataSystem.set_chunk_loaded(chunk.coordinates, false)
-		var region := WorldDataSystem.region_from_chunk(chunk.coordinates)
+		var region: Vector2i = WorldDataSystem.region_from_chunk(chunk.coordinates)
 		ObjectPool.release(chunk, &"world_chunk")
 		if not _region_has_active_chunks(region):
 			WorldDataSystem.set_region_loaded(region, false)
